@@ -72,3 +72,24 @@ getTweet(new Bird)
 def biophony[T<:Animal](things:Seq[T]) = things map (_.sound)
 
 biophony(Seq(new Bird,new Chicken))
+
+//bottom frontline support too. That's connect with contravariant. Let we have some class
+//class Node[T](x:T) {def sub (v:T): Node[T] = new Node(v)}
+// and we wanna T -> [+T]
+// and on string below we have some troubles
+//class failedNodes[+T](x:T) {def sub (v:T): Node[T] = new Node(v)}
+// why? we have backward dependency btw nodes, what eq CONTRAVARIANT
+class BirdNode[Bird](x:Bird){def sub(v:Bird):BirdNode[Bird] = new BirdNode(v)}
+//isn't sub of
+class AnimalNode[Animal](x:Animal) {def sub (v:Animal): AnimalNode[Animal] = new AnimalNode(v)}
+/*
+why? Cause whe can't replace Animal with Bird inside of sub(v:Animal)
+ */
+//Soooo what:
+class Node[+T](x:T) {def sub[U >:T](v:U):Node[U] = new Node(v)}
+//usage:
+(new Node(new Bird)).sub(new Bird)
+(new Node(new Bird)).sub(new Bird).sub(new Animal)
+((new Node(new Bird)).sub(new Bird)).asInstanceOf[Node[Chicken]]
+(((new Node(new Bird)).sub(new Bird)).sub(new Animal)).sub(new Chicken)
+//fuck yeah!!! Thats' hell
