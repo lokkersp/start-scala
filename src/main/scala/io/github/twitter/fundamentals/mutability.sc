@@ -65,7 +65,7 @@ getTweet(new Bird)
 
 //restrictions
 // restrictions reflect relations btw subtypes
-// next doesn't correct cause things nothing knows about sound
+// next doesn't correct cause things doesn't know anything about sound, or the T.
 //def cacaphony[T](things:Seq[T]) = things map (_.sound)
 
 //let's fix
