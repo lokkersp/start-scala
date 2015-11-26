@@ -14,3 +14,4 @@ def hashcodes(l: Seq[_ <: AnyRef]) = l map (_.hashCode)
 //hashcodes(Seq(1,2,23))
 hashcodes(Seq("one","two","three"))
 hashcodes(Seq(1,2,3).asInstanceOf[Seq[AnyRef]])
+
