@@ -26,9 +26,8 @@ class ContainerE[A](value:A) {
     def addIt(implicit evidence: A =:= Int) = 123 + value
     why: we can't prove that String =:= Int
     how-to fix: replace =:= with <%<
-  */
-
+    */
+    def addIt[A](implicit evidence: A <%< Int) = 123 + value
 }
 (new ContainerE("123"))
 //(new ContainerE("123")).addIt
-def addIt[A](evidence: A <%< Int) = 123 + value
