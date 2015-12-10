@@ -1,21 +1,5 @@
 import scala.util.matching.Regex
 
-/*
-Во всех вариантах требуется разработать программу,
- реализующую комбинированный способ организации таблицы идентификаторов.
-  Для организации таблицы используется простейшая хэш-функция - "Сумма кодов первой и последней букв"
-  а при возникновении коллизий используется дополнительный метод размещения идентификаторов в памяти.
-  Если в качестве этого метода используется дерево или список,
-  то они должны быть связаны с элементом главной хэш-таблицы.
-В каждом варианте требуется, чтобы программа сообщала
-среднее число коллизий и
-среднее количество сравнений,
-выполненных для поиска идентификатора.
-
-Простое рехеширование
-
-
- */
 var avgCollision:Double = 0
 var avgComCount:Double = 0
 
@@ -39,27 +23,37 @@ def getHash(s:String):Int = {
 }
 def reHash(s:String):Int = {
   val c = s.toCharArray()
-  return (c.head:Int) + (c.last.toUpper:Int);
+  if (!c.head.isUpper && c.last.isLower){
+  return (c.head.toUpper:Int) + (c.last.toUpper:Int);}
+  return (c.head:Int) + (c.last.toUpper:Int)
 }
 def IsCollision(m:Map[Int,String],k:Int):Boolean = {
   m.contains(k);
 }
 
-def putToMap(mx:Map[Int,String],ex:String) = {
+def putToMap(mx:Map[Int,String],ex:String):Map[Int,String] = {
   val k= getHash(ex);
   var e:String = ex;
   var m:Map[Int,String] = mx;
   if(!IsCollision(mx,k)) {
     m += (k->e);
-  } else {
-    if(m.get(k) != e) {
-      m += reHash(e)->e;
-    } else {
-      m += ((reHash(e) + (e.size % m.size)) ->e)
-    }
   }
+  return m;
 }
 
-
-var myHashMap = Map(getHash("i")->"i")
-myHashMap +=(getHash("I")->"I")
+var m:Map[Int,String] = Map()
+m = putToMap(m,"first")
+m = putToMap(m,"First")
+m += ("first".hashCode()->"first")
+m
+m += ("first".hashCode()->"first")
+m
+m = putToMap(m,"First")
+//m: Map[Int,String] = Map()
+//m: Map[Int,String] = Map(218 -> first)
+//m: Map[Int,String] = Map(218 -> first, 186 -> First)
+//res0: Unit = ()
+//res1: Map[Int,String] = Map(218 -> first, 186 -> First, 97440432 -> first)
+//res2: Unit = ()
+//res3: Map[Int,String] = Map(218 -> first, 186 -> First, 97440432 -> first)
+//m: Map[Int,String] = Map(218 -> first, 186 -> First, 97440432 -> first)
