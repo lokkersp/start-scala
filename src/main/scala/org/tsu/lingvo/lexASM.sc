@@ -117,22 +117,67 @@ def withoutLabelWithParams(s:String):Boolean = {
   return false;
 }
 
-def parseString(s:String):Any = {
+def parseString(s:String):Map[String,String] = {
+  var lex:Map[String,String] = Map()
   val labelPattern = "[A-Z]+:".r
-  val singleParamPattern = "\\s\\w+".r
-  val twoParamPattern = "\\s\\w+,\\w+\\z".r
+  val cmdPattern =  "([A-Z]+|:\\s[A-Z]+)".r
+  val singleParamPattern = "\\s\\w+\\z".r
+  val twoParamsPattern = "\\s\\w+,\\w+\\z".r
+  val firstParamPattern = "\\s\\w+,".r
+  val secondParamPattern = "\\w+\\z".r
+
   if (isASMSCandidate(s)) {
     if(withoutLabelWithoutParams(s)) {
-      var lex:Map[String,String] = Map("cmd"-> s.trim())
+      lex += ("cmd"-> s.trim())
       return lex;
     }
-    if(withoutLabelWithParams(s))
-    if(withLabelWithoutParams(s))
-    if(withLabelWithParams(s)) {
-      val pat = "[A-Z]+:".r
-      var h = pat findFirstIn s
-      //lbl = lbl.get
+    if(withoutLabelWithParams(s)) {
+      val pCMD = (cmdPattern.findFirstIn(s)).get
+      lex += ("cmd"->pCMD)
+      val ts = s.replaceAll(pCMD,"")
+      var pPARAM:String = ""
+      var pPARAM1:String = ""
+      var pPARAM2:String = ""
+      if (twoParamsPattern.findFirstIn(ts).get == None) {
+        pPARAM = singleParamPattern.findFirstIn(ts).get
+        lex += ("param"->pPARAM)
+      } else {
+        pPARAM1 = firstParamPattern.findFirstIn(ts).get
+        lex += ("param1"->pPARAM1)
+        val ts1 = ts.replaceFirst(pPARAM1,"")
+        pPARAM2 = secondParamPattern.findFirstIn(ts1).get
+        lex += ("param2"->pPARAM2)
+      }
 
     }
+    if(withLabelWithoutParams(s)) {
+      val pLBL = (labelPattern.findFirstIn(s).get)
+      lex += ("lbl"->pLBL.replaceAll(":","").trim())
+      val ts = s.replaceFirst(pLBL,"")
+      val pCMD = cmdPattern.findFirstIn(ts).get
+      lex += ("cmd"->pCMD.trim())
+    }
+    if(withLabelWithParams(s)) {
+      val pLBL = (labelPattern.findFirstIn(s).get)
+      lex += ("lbl"->pLBL.replaceAll(":","").trim())
+      val ts = s.replaceFirst(pLBL,"")
+      val pCMD = cmdPattern.findFirstIn(ts).get
+      lex += ("cmd"->pCMD.trim())
+      val ts1 = ts.replaceFirst(pCMD,"")
+      var pPARAM:String = ""
+      var pPARAM1:String = ""
+      var pPARAM2:String = ""
+      if (twoParamsPattern.findFirstIn(ts1).get == None) {
+        pPARAM = singleParamPattern.findFirstIn(ts1).get
+        lex += ("param"->pPARAM)
+      } else {
+        pPARAM1 = firstParamPattern.findFirstIn(ts1).get
+        lex += ("param1"->pPARAM1)
+        val ts2 = ts.replaceFirst(pPARAM1,"")
+        pPARAM2 = secondParamPattern.findFirstIn(ts2).get
+        lex += ("param2"->pPARAM2)
+      }
+    }
   }
+  return lex;
 }
