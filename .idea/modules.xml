@@ -2,6 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/src/.idea/modules/src.iml" filepath="$PROJECT_DIR$/src/.idea/modules/src.iml" />
+      <module fileurl="file://$PROJECT_DIR$/src/.idea/modules/src-build.iml" filepath="$PROJECT_DIR$/src/.idea/modules/src-build.iml" />
       <module fileurl="file://$PROJECT_DIR$/startscala.iml" filepath="$PROJECT_DIR$/startscala.iml" />
     </modules>
   </component>
